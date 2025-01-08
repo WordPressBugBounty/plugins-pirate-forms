@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
@@ -34,6 +33,7 @@ class PirateForms_I18n {
 		load_plugin_textdomain(
 			'pirate-forms',
 			false,
+			// phpcs:ignore Modernize.FunctionCalls.Dirname.Nested
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
 	}

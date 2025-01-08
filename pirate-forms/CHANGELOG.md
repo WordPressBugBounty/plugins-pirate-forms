@@ -1,3 +1,8 @@
+### 2.6.0 - 2025-01-08
+
+* The minimum required WordPress version is now 5.5.
+* The minimum required PHP version is now 5.6.
+
 ### 2.5.2 - 2019-07-26
 
 * Improved security of notfication emails.

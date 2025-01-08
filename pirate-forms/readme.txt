@@ -1,10 +1,10 @@
 === Contact Form & SMTP Plugin for WordPress by PirateForms ===
 Contributors: wpforms, jaredatch, smub, slaFFik
-Tags:  contact form, contact form plugin, forms, smtp, custom form, subscribe form, feedback form, wordpress contact form
-Requires at least: 3.0
-Tested up to: 4.9.8
-Stable tag: trunk
-Requires PHP: 5.2.4
+Tags:  contact form, forms, smtp, subscribe form, feedback form
+Requires at least: 5.5
+Tested up to: 6.7
+Stable tag: 2.6.0
+Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -143,8 +143,14 @@ Syed Balkhi
 4. Screenshot 4. Enabling SMTP
 
 == Changelog ==
+
+= 2.6.0 - 2025-01-08  =
+* The minimum required WordPress version is now 5.5.
+* The minimum required PHP version is now 5.6.
+* Security fixes
+
 = 2.5.2 - 2019-07-26  =
-* Improved security of notfication emails.
+* Improved security of notification emails.
 
 = 2.5.1 - 2019-01-17  =
 * Remove third party library not needed, from composer (mailin-api).

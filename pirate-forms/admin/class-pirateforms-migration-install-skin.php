@@ -17,7 +17,8 @@ class PirateForms_Migration_Install_Skin extends WP_Upgrader_Skin {
 	 * @since 2.4.5
 	 *
 	 * @param array $args Empty array of args (we will use defaults).
-	 */
+	 *
+	 * @noinspection PhpUnusedParameterInspection*/
 	public function __construct( $args = array() ) {
 
 		parent::__construct();
@@ -35,18 +36,6 @@ class PirateForms_Migration_Install_Skin extends WP_Upgrader_Skin {
 		if ( is_object( $upgrader ) ) {
 			$this->upgrader =& $upgrader;
 		}
-	}
-
-	/**
-	 * Set the upgrader result and store it as a property in the parent class.
-	 *
-	 * @since 2.4.5
-	 *
-	 * @param object $result The result of the install process.
-	 */
-	public function set_result( $result ) {
-
-		$this->result = $result;
 	}
 
 	/**
@@ -72,12 +61,12 @@ class PirateForms_Migration_Install_Skin extends WP_Upgrader_Skin {
 	 *
 	 * @since 2.4.5
 	 *
-	 * @param \WP_Error $errors Array of errors with the install process.
+	 * @param WP_Error $errors Array of errors with the installation process.
 	 */
 	public function error( $errors ) {
 
-		if ( ! empty( $errors ) ) {
-			foreach ( $errors->errors as $key => $error ) {
+		if ( null !== $errors ) {
+			foreach ( $errors->errors as $error ) {
 				if ( ! empty( $error[0] ) ) {
 					wp_send_json_error( $error[0] );
 					break;
@@ -87,13 +76,14 @@ class PirateForms_Migration_Install_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Empty out the feedback method to prevent outputting HTML strings as the install
+	 * Empty out the feedback method to prevent outputting HTML strings as the installation
 	 * is progressing.
 	 *
 	 * @since 2.4.5
 	 *
-	 * @param string $string The feedback string.
+	 * @param string $feedback The feedback string.
+	 * @param mixed  ...$args  Optional text replacements.
 	 */
-	public function feedback( $string ) {
+	public function feedback( $feedback, ...$args ) {
 	}
 }

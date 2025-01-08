@@ -4,22 +4,16 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit1dfb675b6cb6c3fcf8a1e1fdb658055e
+class ComposerStaticInit5e89254561c48b0998366d8d72ed5902
 {
-    public static $prefixesPsr0 = array (
-        'x' => 
-        array (
-            'xrstf\\Composer52' => 
-            array (
-                0 => __DIR__ . '/..' . '/xrstf/composer-php52/lib',
-            ),
-        ),
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixesPsr0 = ComposerStaticInit1dfb675b6cb6c3fcf8a1e1fdb658055e::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit5e89254561c48b0998366d8d72ed5902::$classMap;
 
         }, null, ClassLoader::class);
     }

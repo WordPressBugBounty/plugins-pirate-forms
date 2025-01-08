@@ -3,9 +3,9 @@
 /**
  * Class PirateForms_Farewell handles notices that are displayed to user about PirateForms retirement.
  *
- * @package    WPForms
- * @author     WPForms
  * @since      2.4.5
+ * @author     WPForms
+ * @package    WPForms
  * @license    GPL-2.0+
  * @copyright  Copyright (c) 2018, WPForms LLC
  */
@@ -21,7 +21,7 @@ class PirateForms_Farewell {
 	const SLUG_MIGRATION_PAGE = 'pirateforms-admin-migration';
 
 	/**
-	 * Meta key where the option (of the time the Darewell notice was dismissed) is saved.
+	 * Meta key where the option (of the time the Farewell notice was dismissed) is saved.
 	 *
 	 * @since 2.4.5
 	 *
@@ -37,7 +37,7 @@ class PirateForms_Farewell {
 	 *
 	 * @var string
 	 */
-	const URL_FULL_ANNOUNCE  = 'https://wpforms.com/wpforms-has-acquired-pirate-forms?utm_source=pirateformsplugin&utm_campaign=pirateformsannouncement';
+	const URL_FULL_ANNOUNCE = 'https://wpforms.com/wpforms-has-acquired-pirate-forms?utm_source=pirateformsplugin&utm_campaign=pirateformsannouncement';
 
 	/**
 	 * Direct link to download the plugin.
@@ -55,11 +55,10 @@ class PirateForms_Farewell {
 	 */
 	public function __construct() {
 
-
-		add_action( 'admin_head', array( $this, 'process_notices' ) );
-		add_action( 'wp_ajax_pirateforms_migration_install', array( $this, 'process_migration_install' ) );
-		add_action( 'wp_ajax_pirateforms_migration_activate', array( $this, 'process_migration_activate' ) );
-		add_filter( 'wpforms_upgrade_link_medium', array( $this, 'process_migration_source' ) );
+		add_action( 'admin_head', [ $this, 'process_notices' ] );
+		add_action( 'wp_ajax_pirateforms_migration_install', [ $this, 'process_migration_install' ] );
+		add_action( 'wp_ajax_pirateforms_migration_activate', [ $this, 'process_migration_activate' ] );
+		add_filter( 'wpforms_upgrade_link_medium', [ $this, 'process_migration_source' ] );
 	}
 
 	/**
@@ -69,15 +68,21 @@ class PirateForms_Farewell {
 	 */
 	public function process_notices() {
 
-		/** @var \WP_Screen $screen */
+		/**
+		 * Current screen object.
+		 *
+		 * @var WP_Screen $screen
+		 */
 		$screen = get_current_screen();
 
 		if ( ! empty( $screen->base ) && $screen->base === 'dashboard' ) {
 
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended
 			if ( isset( $_GET['try_wpforms'] ) ) {
 				$farewell = empty( $_GET['try_wpforms'] ) ? time() : 0;
 				update_user_meta( get_current_user_id(), 'pirate_forms_farewell_dismissed', $farewell );
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 			$farewell = get_user_meta( get_current_user_id(), 'pirate_forms_farewell_dismissed', true );
 
@@ -107,10 +112,6 @@ class PirateForms_Farewell {
 		}
 
 		return true;
-
-		$date_dismissed = DateTime::createFromFormat( 'U', $dismissed );
-
-		return $date_dismissed->modify( '+1 month' ) <= DateTime::createFromFormat( 'U', time() );
 	}
 
 	/**
@@ -128,7 +129,9 @@ class PirateForms_Farewell {
 
 		<div id="try-wpforms-panel" class="try-wpforms-panel">
 			<?php wp_nonce_field( 'try-wpforms-panel-nonce', 'trywpformspanelnonce', false ); ?>
-			<a class="try-wpforms-panel-close" href="<?php echo esc_url( admin_url( '?try_wpforms=0' ) ); ?>" aria-label="<?php esc_attr_e( 'Dismiss the Try WPForms panel' ); ?>">
+			<a
+					class="try-wpforms-panel-close" href="<?php echo esc_url( admin_url( '?try_wpforms=0' ) ); ?>"
+					aria-label="<?php esc_attr_e( 'Dismiss the Try WPForms panel', 'pirate-forms' ); ?>">
 				<?php esc_html_e( 'Dismiss', 'pirate-forms' ); ?>
 			</a>
 
@@ -145,8 +148,9 @@ class PirateForms_Farewell {
 					<div class="try-wpforms-panel-column try-wpforms-panel-image-column">
 						<picture>
 							<source srcset="about:blank" media="(max-width: 1024px)">
-							<img src="<?php echo esc_url( PIRATEFORMS_URL . 'admin/img/wpforms-builder.png'); ?>"
-							     alt="<?php esc_attr_e( 'Screenshot from the WPForms Builder interface', 'pirate-forms' ); ?>"/>
+							<img
+									src="<?php echo esc_url( PIRATEFORMS_URL . 'admin/img/wpforms-builder.png' ); ?>"
+									alt="<?php esc_attr_e( 'Screenshot from the WPForms Builder interface', 'pirate-forms' ); ?>"/>
 						</picture>
 					</div>
 					<div class="try-wpforms-panel-column plugin-card-wpforms">
@@ -165,16 +169,20 @@ class PirateForms_Farewell {
 
 						<div class="try-wpforms-action">
 							<p>
-								<a class="button button-primary button-hero" href="<?php echo esc_url( $this->get_migration_page_url() ); ?>">
+								<a
+										class="button button-primary button-hero"
+										href="<?php echo esc_url( $this->get_migration_page_url() ); ?>">
 									<?php esc_html_e( 'Migrate to WPForms', 'pirate-forms' ); ?>
 								</a>
 							</p>
 
 							<p>
 								<?php
-								echo '<a href="https://wpforms.com/" target="_blank" rel="noopener noreferrer">' .
-								     esc_html__( 'Learn more about WPForms', 'pirate-forms' ) .
-								     '</a>';
+								echo(
+									'<a href="https://wpforms.com/" target="_blank" rel="noopener noreferrer">' .
+									esc_html__( 'Learn more about WPForms', 'pirate-forms' ) .
+									'</a>'
+								);
 								?>
 							</p>
 						</div>
@@ -195,7 +203,10 @@ class PirateForms_Farewell {
 
 						<div class="try-wpforms-action">
 							<p>
-								<a class="button button-secondary button-hero" href="<?php echo esc_url( self::URL_FULL_ANNOUNCE ); ?>" target="_blank" rel="noopener noreferrer">
+								<a
+										class="button button-secondary button-hero"
+										href="<?php echo esc_url( self::URL_FULL_ANNOUNCE ); ?>" target="_blank"
+										rel="noopener noreferrer">
 									<?php esc_html_e( 'Read the Full Announcement', 'pirate-forms' ); ?>
 								</a>
 							</p>
@@ -207,9 +218,9 @@ class PirateForms_Farewell {
 		</div>
 
 		<script>
-			jQuery(document).ready(function(){
+			jQuery( document ).ready( function() {
 				jQuery( '#try-wpforms-panel' ).insertAfter( '#wpbody-content .wrap h1' ).show();
-			});
+			} );
 		</script>
 
 		<?php
@@ -218,7 +229,8 @@ class PirateForms_Farewell {
 	/**
 	 * Non-dismissable notice displayed to a user after 30 days of detailed notice dismiss.
 	 *
-	 * @since 2.4.5
+	 * @since        2.4.5
+	 * @noinspection HtmlUnknownTarget
 	 */
 	public function display_short_notice() {
 
@@ -226,15 +238,15 @@ class PirateForms_Farewell {
 		printf(
 			wp_kses(
 				'<strong>Important:</strong> Pirate Forms is being retired and is no longer supported. We have created an easy migrator to move your forms + settings to WPForms, which is the most user-friendly WordPress form builder. Please <a href="%1$s">migrate to WPForms</a> and discontinue using Pirate Forms.',
-				array(
-					'br' => array(),
-					'strong' => array(),
-					'a'      => array(
-						'href'   => array(),
-						'target' => array(),
-						'rel'    => array(),
-					),
-				)
+				[
+					'br'     => [],
+					'strong' => [],
+					'a'      => [
+						'href'   => [],
+						'target' => [],
+						'rel'    => [],
+					],
+				]
 			),
 			esc_url( $this->get_migration_page_url() ) // Migration.
 		);
@@ -270,7 +282,7 @@ class PirateForms_Farewell {
 		// Set the current screen to avoid undefined notices.
 		set_current_screen();
 
-		$creds = request_filesystem_credentials( $this->get_migration_page_url(), '', false, false, null );
+		$creds = request_filesystem_credentials( $this->get_migration_page_url(), '', false, false );
 
 		// Check for file system permissions.
 		if ( false === $creds ) {
@@ -286,7 +298,7 @@ class PirateForms_Farewell {
 		require_once PIRATEFORMS_DIR . 'admin/class-pirateforms-migration-install-skin.php';
 
 		// Do not allow WordPress to search/download translations, as this will break JS output.
-		remove_action( 'upgrader_process_complete', array( 'Language_Pack_Upgrader', 'async_upgrade' ), 20 );
+		remove_action( 'upgrader_process_complete', [ 'Language_Pack_Upgrader', 'async_upgrade' ], 20 );
 
 		// Create the plugin upgrader with our custom skin.
 		$installer = new Plugin_Upgrader( new PirateForms_Migration_Install_Skin() );
@@ -314,7 +326,7 @@ class PirateForms_Farewell {
 
 			if ( ! is_wp_error( $activated ) ) {
 				wp_send_json_success(
-					esc_html__( 'Plugin was successfully installed and activated.', 'wpforms' )
+					esc_html__( 'Plugin was successfully installed and activated.', 'pirate-forms' )
 				);
 			}
 
@@ -353,7 +365,7 @@ class PirateForms_Farewell {
 		// Plugin exists but not active.
 		if ( array_key_exists( $pro, $all_plugins ) ) {
 			$activated = activate_plugin( $pro );
-		} else if ( array_key_exists( $lite, $all_plugins ) ) {
+		} elseif ( array_key_exists( $lite, $all_plugins ) ) {
 			$activated = activate_plugin( $lite );
 		}
 
@@ -364,13 +376,18 @@ class PirateForms_Farewell {
 			}
 
 			wp_send_json_success(
-				esc_html__( 'Plugin was successfully activated.', 'wpforms' )
+				esc_html__( 'Plugin was successfully activated.', 'pirate-forms' )
 			);
 		}
 
 		wp_send_json_error( $error );
 	}
 
+	/**
+	 * Process the migration source.
+	 *
+	 * @return string
+	 */
 	public function process_migration_source() {
 		return 'pirateforms';
 	}

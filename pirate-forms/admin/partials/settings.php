@@ -1,26 +1,54 @@
+<?php
+/**
+ * Settings partial for Pirate Forms to WPForms.
+ *
+ * @package pirate-forms
+ * @var array $plugin_options Plugin options.
+ */
+
+?>
 <div class="wrap">
 	<div id="pirate-forms-main">
 		<h3><?php esc_html_e( 'Pirate Forms', 'pirate-forms' ); ?></h3>
 
 		<div class="pirate-options">
 			<ul class="pirate-forms-nav-tabs" role="tablist">
-				<li role="presentation" class="active"><a href="#0" aria-controls="how_to_use" role="tab"
-				                                          data-toggle="tab"><?php esc_html_e( 'How to use', 'pirate-forms' ); ?></a>
+				<li role="presentation" class="active">
+					<a
+							href="#0" aria-controls="how_to_use" role="tab"
+							data-toggle="tab"><?php esc_html_e( 'How to use', 'pirate-forms' ); ?>
+					</a>
 				</li>
-				<li role="presentation"><a href="#1" aria-controls="options" role="tab"
-				                           data-toggle="tab"><?php esc_html_e( 'Options', 'pirate-forms' ); ?></a>
+				<li role="presentation">
+					<a
+							href="#1" aria-controls="options" role="tab"
+							data-toggle="tab"><?php esc_html_e( 'Options', 'pirate-forms' ); ?>
+					</a>
 				</li>
-				<li role="presentation"><a href="#2" aria-controls="fields" role="tab"
-				                           data-toggle="tab"><?php esc_html_e( 'Fields Settings', 'pirate-forms' ); ?></a>
+				<li role="presentation">
+					<a
+							href="#2" aria-controls="fields" role="tab"
+							data-toggle="tab"><?php esc_html_e( 'Fields Settings', 'pirate-forms' ); ?>
+					</a>
 				</li>
-				<li role="presentation"><a href="#3" aria-controls="labels" role="tab"
-				                           data-toggle="tab"><?php esc_html_e( 'Fields Labels', 'pirate-forms' ); ?></a>
+				<li role="presentation">
+					<a
+							href="#3" aria-controls="labels" role="tab"
+							data-toggle="tab"><?php esc_html_e( 'Fields Labels', 'pirate-forms' ); ?>
+					</a>
 				</li>
-				<li role="presentation"><a href="#4" aria-controls="messages" role="tab"
-				                           data-toggle="tab"><?php esc_html_e( 'Alert Messages', 'pirate-forms' ); ?></a>
+				<li role="presentation">
+					<a
+							href="#4" aria-controls="messages" role="tab"
+							data-toggle="tab"><?php esc_html_e( 'Alert Messages', 'pirate-forms' ); ?>
+					</a>
 				</li>
-				<li role="presentation"><a href="#5" aria-controls="smtp" role="tab"
-				                           data-toggle="tab"><?php esc_html_e( 'SMTP', 'pirate-forms' ); ?></a></li>
+				<li role="presentation">
+					<a
+							href="#5" aria-controls="smtp" role="tab"
+							data-toggle="tab"><?php esc_html_e( 'SMTP', 'pirate-forms' ); ?>
+					</a>
+				</li>
 			</ul>
 
 			<div class="pirate-forms-tab-content">
@@ -36,8 +64,11 @@
 
 					<p><?php esc_html_e( 'There are 3 ways of using the newly created form:', 'pirate-forms' ); ?></p>
 					<ol>
-						<li><?php esc_html_e( 'Add a ', 'pirate-forms' ); ?><strong><a
-										href="<?php echo admin_url( 'widgets.php' ); ?>"><?php esc_html_e( 'widget', 'pirate-forms' ); ?></a></strong>
+						<li>
+							<?php esc_html_e( 'Add a ', 'pirate-forms' ); ?>
+							<strong>
+								<a href="<?php echo esc_url( admin_url( 'widgets.php' ) ); ?>"><?php esc_html_e( 'widget', 'pirate-forms' ); ?></a>
+							</strong>
 						</li>
 						<li><?php esc_html_e( 'Use the shortcode ', 'pirate-forms' ); ?>
 							<strong><code>[pirate_forms]</code></strong><?php esc_html_e( ' in any page or post.', 'pirate-forms' ); ?>
@@ -61,7 +92,7 @@
 				$tab_index   = 1;
 				foreach ( $plugin_options as $tab => $array ) {
 					?>
-					<div id="<?php echo $tab_index ++; ?>" class="pirate-forms-tab-pane <?php echo $tab; ?>">
+					<div id="<?php echo esc_attr( $tab_index++ ); ?>" class="pirate-forms-tab-pane <?php echo esc_attr( $tab ); ?>">
 						<form method="post" class="pirate_forms_contact_settings">
 							<?php
 							$html_helper->add(

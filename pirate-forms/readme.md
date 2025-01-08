@@ -293,6 +293,11 @@ Activating the Pirate Contact Form plugin is just like any other plugin. If you'
 4. Screenshot 4. Enabling SMTP
 
 ## Changelog ##
+### 2.6.0 - 2025-01-08  ###
+* The minimum required WordPress version is now 5.5.
+* The minimum required PHP version is now 5.6.
+* Security fixes
+
 ### 2.5.1 - 2019-01-17  ###
 
 * Remove third party library not needed, from composer (mailin-api).

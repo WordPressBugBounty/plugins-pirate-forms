@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The file that defines the core plugin class
  *
@@ -33,7 +32,7 @@ class PirateForms {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      PirateForms_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      PirateForms_Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -42,7 +41,7 @@ class PirateForms {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 * @var      string $plugin_name The string used to uniquely identify this plugin.
 	 */
 	protected $plugin_name;
 
@@ -51,7 +50,7 @@ class PirateForms {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @var      string $version The current version of the plugin.
 	 */
 	protected $version;
 
@@ -67,7 +66,7 @@ class PirateForms {
 	public function __construct() {
 
 		$this->plugin_name = 'pirateforms';
-		$this->version = '2.4.4';
+		$this->version     = '2.4.4';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -86,7 +85,7 @@ class PirateForms {
 	 * @access   private
 	 */
 	private function define_gutenberg_hooks() {
-		$gutenberg  = new PirateForms_Gutenberg( $this->get_plugin_name(), $this->get_version() );
+		$gutenberg = new PirateForms_Gutenberg( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'enqueue_block_editor_assets', $gutenberg, 'enqueue_block_editor_assets' );
 		$this->loader->add_action( 'init', $gutenberg, 'register_block' );
@@ -114,7 +113,6 @@ class PirateForms {
 		require_once PIRATEFORMS_DIR . 'includes/class-pirateforms-widget.php';
 
 		$this->loader = new PirateForms_Loader();
-
 	}
 
 	/**
@@ -131,18 +129,17 @@ class PirateForms {
 		$plugin_i18n = new PirateForms_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
 	}
 
 	/**
-	 * Register all of the hooks related to common functionality
+	 * Register all the hooks related to common functionality
 	 * of the plugin.
 	 *
 	 * @since    1.0.0
 	 * @access   private
 	 */
 	private function define_common_hooks() {
-		$this->loader->add_action( 'init', $this, 'register_content_type', 10 );
+		$this->loader->add_action( 'init', $this, 'register_content_type' );
 		$this->loader->add_filter( 'pirate_forms_version_supports', $this, 'version_supports' );
 
 		if ( PIRATEFORMS_DEBUG ) {
@@ -151,7 +148,7 @@ class PirateForms {
 	}
 
 	/**
-	 * Register all of the hooks related to the admin area functionality
+	 * Register all the hooks related to the admin area functionality
 	 * of the plugin.
 	 *
 	 * @since    1.0.0
@@ -176,12 +173,12 @@ class PirateForms {
 
 		$this->loader->add_filter( 'manage_pf_contact_posts_columns', $plugin_admin, 'manage_contact_posts_columns', PHP_INT_MAX );
 		$this->loader->add_filter( 'manage_pf_contact_posts_custom_column', $plugin_admin, 'manage_contact_posts_custom_column', 10, 2 );
-		$this->loader->add_filter( 'wp_privacy_personal_data_exporters', $plugin_admin, 'register_private_data_exporter', 10 );
-		$this->loader->add_filter( 'wp_privacy_personal_data_erasers', $plugin_admin, 'register_private_data_eraser', 10 );
+		$this->loader->add_filter( 'wp_privacy_personal_data_exporters', $plugin_admin, 'register_private_data_exporter' );
+		$this->loader->add_filter( 'wp_privacy_personal_data_erasers', $plugin_admin, 'register_private_data_eraser' );
 	}
 
 	/**
-	 * Register all of the hooks related to the public-facing functionality
+	 * Register all the hooks related to the public-facing functionality
 	 * of the plugin.
 	 *
 	 * @since    1.0.0
@@ -194,7 +191,7 @@ class PirateForms {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles_and_scripts' );
 		$this->loader->add_action( 'template_redirect', $plugin_public, 'template_redirect' );
 
-		// ONLY FOR UNIT TESTING: we cannot fire template_redirect without errors, that is why we are creating a manual hook for this
+		// ONLY FOR UNIT TESTING: we cannot fire template_redirect without errors, that is why we are creating a manual hook for this.
 		$this->loader->add_action( 'pirate_unittesting_template_redirect', $plugin_public, 'template_redirect' );
 		$this->loader->add_action( 'pirate_forms_send_email', $plugin_public, 'send_email' );
 
@@ -209,11 +206,11 @@ class PirateForms {
 
 		$this->loader->add_filter( 'pirate_forms_friendly_name', $plugin_public, 'change_name' );
 
-		add_shortcode( 'pirate_forms', array( $plugin_public, 'display_form' ) );
+		add_shortcode( 'pirate_forms', [ $plugin_public, 'display_form' ] );
 	}
 
 	/**
-	 * Run the loader to execute all of the hooks with WordPress.
+	 * Run the loader to execute all the hooks with WordPress.
 	 *
 	 * @since    1.0.0
 	 */
@@ -260,7 +257,7 @@ class PirateForms {
 	 * @since     1.0.0
 	 */
 	public function register_content_type() {
-		$labels = array(
+		$labels = [
 			'name'               => _x( 'Entries', 'post type general name', 'pirate-forms' ),
 			'singular_name'      => _x( 'Entry', 'post type singular name', 'pirate-forms' ),
 			'menu_name'          => _x( 'Entries', 'admin menu', 'pirate-forms' ),
@@ -272,8 +269,8 @@ class PirateForms {
 			'parent_item_colon'  => __( 'Parent Entries:', 'pirate-forms' ),
 			'not_found'          => __( 'No entries found.', 'pirate-forms' ),
 			'not_found_in_trash' => __( 'No entries found in Trash.', 'pirate-forms' ),
-		);
-		$args   = array(
+		];
+		$args   = [
 			'labels'             => $labels,
 			'description'        => __( 'Entries from Pirate Forms', 'pirate-forms' ),
 			'public'             => false,
@@ -285,27 +282,40 @@ class PirateForms {
 			'has_archive'        => true,
 			'hierarchical'       => false,
 			'menu_position'      => null,
-			'supports'           => array( 'title', 'editor', 'custom-fields' ),
-			'capabilities'       => array(
-				'create_posts'   => false,
-			),
+			'supports'           => [ 'title', 'editor', 'custom-fields' ],
+			'capabilities'       => [
+				'create_posts' => false,
+			],
 			'map_meta_cap'       => true,
 
-		);
+		];
 		register_post_type( 'pf_contact', $args );
 	}
 
 	/**
 	 * Return the new features that have been introduced so that the pro plugin can take an action on the basis of that.
+	 *
+	 * @param array|null $version The version of the plugin.
+	 *
+	 * @return string[]
 	 */
-	public function version_supports( $null = null ) {
-		return array( 'wysiwyg' );
+	public function version_supports( $version = null ) {
+		return [ 'wysiwyg' ];
 	}
 
 	/**
 	 * For local testing, overrides the 'themeisle_log_event' hook and redirects to error.log.
+	 *
+	 * @param string $name    The name of the event.
+	 * @param string $message The message to log.
+	 * @param string $type    The type of the event.
+	 * @param string $file    The file where the event occurred.
+	 * @param string $line    The line where the event occurred.
+	 *
+	 * @return void
 	 */
-	final function themeisle_log_event_debug( $name, $message, $type, $file, $line ) {
+	final public function themeisle_log_event_debug( $name, $message, $type, $file, $line ) {
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 		error_log( sprintf( '%s (%s): %s in %s:%s', $name, $type, $message, $file, $line ) );
 	}
 }
