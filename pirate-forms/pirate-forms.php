@@ -10,7 +10,7 @@
  * Plugin Name:       Contact Form & SMTP Plugin for WordPress by PirateForms
  * Plugin URI:        http://themeisle.com/plugins/pirate-forms/
  * Description:       Easily creates a nice looking, simple contact form on your WP site.
- * Version:           2.6.0
+ * Version:           2.6.1
  * Requires at least: 5.5
  * Requires PHP:      5.6
  * Author:            WPForms
@@ -31,7 +31,7 @@ if ( ! defined( 'WPINC' ) ) {
 define( 'PIRATEFORMS_NAME', 'Pirate Forms' );
 define( 'PIRATEFORMS_SLUG', 'pirate-forms' );
 define( 'PIRATEFORMS_API_VERSION', '1' );
-define( 'PIRATE_FORMS_VERSION', '2.6.0' );
+define( 'PIRATE_FORMS_VERSION', '2.6.1' );
 define( 'PIRATEFORMS_DIR', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 define( 'PIRATEFORMS_URL', plugin_dir_url( __FILE__ ) );
 define( 'PIRATEFORMS_BASENAME', plugin_basename( __FILE__ ) );
@@ -52,21 +52,27 @@ define( 'PIRATEFORMS_DEBUG', false );
 function pirate_forms_autoload( $class_name ) {
 	$namespaces = array( 'PirateForms' );
 	$class1     = str_replace( '_', '-', strtolower( 'class-' . $class_name ) );
+
 	foreach ( $namespaces as $namespace ) {
 		if ( strpos( $class_name, $namespace ) === 0 ) {
 			$filename = PIRATEFORMS_DIR . 'includes/' . $class1 . '.php';
+
 			if ( is_readable( $filename ) ) {
 				require_once $filename;
 
 				return true;
 			}
+
 			$filename = PIRATEFORMS_DIR . 'admin/' . $class1 . '.php';
+
 			if ( is_readable( $filename ) ) {
 				require_once $filename;
 
 				return true;
 			}
+
 			$filename = PIRATEFORMS_DIR . 'public/' . $class1 . '.php';
+
 			if ( is_readable( $filename ) ) {
 				require_once $filename;
 
@@ -74,6 +80,7 @@ function pirate_forms_autoload( $class_name ) {
 			}
 
 			$filename = PIRATEFORMS_DIR . 'public/partials/' . $class1 . '.php';
+
 			if ( is_readable( $filename ) ) {
 				require_once $filename;
 
@@ -81,6 +88,7 @@ function pirate_forms_autoload( $class_name ) {
 			}
 
 			$filename = PIRATEFORMS_DIR . 'gutenberg/' . $class1 . '.php';
+
 			if ( is_readable( $filename ) ) {
 				require_once $filename;
 
@@ -89,6 +97,7 @@ function pirate_forms_autoload( $class_name ) {
 		}
 
 		$filename = PIRATEFORMS_DIR . 'includes/class-pirateforms-widget.php';
+
 		if ( is_readable( $filename ) ) {
 			require_once $filename;
 
@@ -96,6 +105,7 @@ function pirate_forms_autoload( $class_name ) {
 		}
 
 		$filename = PIRATEFORMS_DIR . 'includes/class-pirateforms-farewell.php';
+
 		if ( is_readable( $filename ) ) {
 			require_once $filename;
 
@@ -104,6 +114,25 @@ function pirate_forms_autoload( $class_name ) {
 	}// End foreach().
 
 	return false;
+}
+
+/**
+ * Get the main class of PirateForms.
+ *
+ * @since 2.6.1
+ *
+ * @return PirateForms
+ */
+function pirate_forms() {
+	static $plugin;
+
+	if ( ! $plugin ) {
+		$plugin = new PirateForms();
+
+		$plugin->run();
+	}
+
+	return $plugin;
 }
 
 /**
@@ -116,14 +145,7 @@ function pirate_forms_autoload( $class_name ) {
  * @since    1.0.0
  */
 function run_pirate_forms() {
-
-	$plugin = new PirateForms();
-	$plugin->run();
-
-	$vendor_file = PIRATEFORMS_DIR . '/vendor/autoload_52.php';
-	if ( is_readable( $vendor_file ) ) {
-		require_once $vendor_file;
-	}
+	pirate_forms();
 }
 
 spl_autoload_register( 'pirate_forms_autoload' );

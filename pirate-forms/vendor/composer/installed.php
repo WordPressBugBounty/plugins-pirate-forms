@@ -3,7 +3,7 @@
         'name' => 'codeinwp/pirate-forms',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'd586879decfa61129ce938b328386b58c9d485c9',
+        'reference' => '05029448d8ccb1045da98f8a808ed4fb916678d9',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'codeinwp/pirate-forms' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'd586879decfa61129ce938b328386b58c9d485c9',
+            'reference' => '05029448d8ccb1045da98f8a808ed4fb916678d9',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

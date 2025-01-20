@@ -10,12 +10,12 @@ class PirateForms_HTML {
 	/**
 	 * Add the HTML element - the single entry point for this class
 	 *
-	 * @since    1.2.6
-	 * @throws Exception If method is not defined.
+	 * @since 1.2.6
 	 */
 	public function add( $args, $do_echo = true ) {
 		if ( isset( $args['front_end'] ) && $args['front_end'] ) {
 			$html = $this->front_end( $args );
+
 			if ( ! $do_echo ) {
 				return $html;
 			}
@@ -26,22 +26,24 @@ class PirateForms_HTML {
 		}
 
 		$type = $args['type'];
+
 		if ( method_exists( $this, $type ) ) {
 			if ( isset( $args['id'] ) && ! isset( $args['name'] ) ) {
 				$args['name'] = $args['id'];
 			}
+
 			if ( isset( $args['class'] ) && is_array( $args['class'] ) ) {
 				$args['class'] = implode( ' ', $args['class'] );
 			}
+
 			$html = $this->$type( $args );
 		} else {
-			// Let's not throw an ugly exception. Let's instead inform the user that they might need to upgrade.
-			// @codingStandardsIgnoreStart
-			$msg = sprintf( 'Field type "%s" not defined. Have you upgraded to the latest version of %s?', $type, PIRATEFORMS_NAME );
-			error_log( $msg );
-			$html = $msg;
-			// @codingStandardsIgnoreEnd
+			$html = sprintf( 'Field type "%s" not defined. Have you upgraded to the latest version of %s?', $type, PIRATEFORMS_NAME );
+
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( $html );
 		}
+
 		if ( ! $do_echo ) {
 			return $html;
 		}
@@ -429,19 +431,20 @@ class PirateForms_HTML {
 
 	/**
 	 * Elements on the front end.
-	 *
-	 * @throws Exception If method is not defined.
 	 */
 	private function front_end( $args ) {
+		global $wp_filesystem;
+
 		$type = $args['type'];
 
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		WP_Filesystem();
-		global $wp_filesystem;
+
 		$plugin_path = str_replace( ABSPATH, $wp_filesystem->abspath(), PIRATEFORMS_DIR );
 		$template    = trailingslashit( $plugin_path ) . "/public/partials/fields/{$type}.php";
+
 		if ( ! $wp_filesystem->is_readable( $template ) ) {
-			throw new Exception( 'Template for ' . esc_html( $type ) . ' not defined' );
+			return '';
 		}
 
 		if ( isset( $args['id'] ) && ! isset( $args['name'] ) ) {

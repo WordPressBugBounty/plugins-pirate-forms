@@ -192,21 +192,36 @@ class PirateForms_Public {
 			$atts
 		);
 
-		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-		do_action( 'themeisle_log_event', PIRATEFORMS_NAME, sprintf( 'displaying shortcode %s', print_r( $atts, true ) ), 'debug', __FILE__, __LINE__ );
-
-		$form_id     = ! empty( $atts['id'] ) ? (int) $atts['id'] : 0;
+		// Sanitize shortcode attribute values.
+		$form_id     = ! empty( $atts['id'] ) ? absint( $atts['id'] ) : 0;
 		$from_widget = ! empty( $atts['from'] );
-		$elements    = [];
-		$pirate_form = new PirateForms_PhpFormBuilder();
+		$ajax        = 'yes' === $atts['ajax'];
 
+		do_action(
+			'themeisle_log_event',
+			PIRATEFORMS_NAME,
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+			sprintf( 'displaying shortcode %s', print_r( $atts, true ) ),
+			'debug',
+			__FILE__,
+			__LINE__
+		);
+
+		$elements             = [];
+		$pirate_form          = new PirateForms_PhpFormBuilder();
 		$pirate_forms_options = PirateForms_Util::get_form_options( $form_id );
-		if ( ! empty( $pirate_forms_options['pirateformsopt_recaptcha_secretkey'] ) && ! empty( $pirate_forms_options['pirateformsopt_recaptcha_sitekey'] ) && ! empty( $pirate_forms_options['pirateformsopt_recaptcha_field'] ) && ( 'yes' === $pirate_forms_options['pirateformsopt_recaptcha_field'] ) ) {
+
+		if (
+			! empty( $pirate_forms_options['pirateformsopt_recaptcha_secretkey'] ) &&
+			! empty( $pirate_forms_options['pirateformsopt_recaptcha_sitekey'] ) &&
+			! empty( $pirate_forms_options['pirateformsopt_recaptcha_field'] ) &&
+			( 'yes' === $pirate_forms_options['pirateformsopt_recaptcha_field'] )
+		) {
 			wp_enqueue_script( 'google-recaptcha' );
 		}
+
 		wp_enqueue_script( 'pirate_forms_scripts' );
 
-		$ajax       = 'yes' === $atts['ajax'];
 		$elements[] = [
 			'type'  => 'hidden',
 			'id'    => 'pirate_forms_ajax',
@@ -235,7 +250,12 @@ class PirateForms_Public {
 		$pirate_forms_options = PirateForms_Util::get_option();
 
 		if ( $form_id > 0 ) {
-			$pirate_forms_options = apply_filters( 'pirateformpro_get_form_attributes', $pirate_forms_options, $form_id );
+			$pirate_forms_options = apply_filters(
+				'pirateformpro_get_form_attributes',
+				$pirate_forms_options,
+				$form_id
+			);
+
 			if ( isset( $pirate_forms_options['id'] ) ) {
 				// Add the form id to the form so that it can be used when we are processing the form.
 				$elements[] = [
@@ -260,8 +280,7 @@ class PirateForms_Public {
 
 		$pirate_form->set_element( 'thank_you_message', $thank_you_message );
 
-		/**
-		 ******** FormBuilder */
+		// FormBuilder.
 		if ( 'yes' === PirateForms_Util::get_option( 'pirateformsopt_nonce' ) ) {
 			$elements[] = [
 				'type'  => 'hidden',
@@ -269,21 +288,23 @@ class PirateForms_Public {
 				'value' => wp_create_nonce( get_bloginfo( 'admin_email' ) . $nonce_append ),
 			];
 		}
+
 		if ( ! empty( $pirate_forms_options ) ) {
 			$field        = $pirate_forms_options['pirateformsopt_name_field'];
 			$label        = $pirate_forms_options['pirateformsopt_label_name'];
 			$subjectField = $pirate_forms_options['pirateformsopt_subject_field'];
 
-			/**
-			 ******  Name field */
+			// Name field.
 			if ( ! empty( $field ) && ! empty( $label ) ) {
 				$wrap_classes = [
 					( ! empty( $subjectField ) ? 'col-xs-12 col-sm-6' : 'col-xs-12' ) . ' contact_name_wrap pirate_forms_three_inputs form_field_wrap',
 				];
+
 				// If this field was submitted with invalid data.
 				if ( isset( $_SESSION[ $error_key ]['contact-name'] ) ) {
 					$wrap_classes[] = 'error';
 				}
+
 				$elements[] = [
 					'front_end'    => true,
 					'placeholder'  => stripslashes( sanitize_text_field( $label ) ),
@@ -299,16 +320,17 @@ class PirateForms_Public {
 			$field = $pirate_forms_options['pirateformsopt_email_field'];
 			$label = $pirate_forms_options['pirateformsopt_label_email'];
 
-			/**
-			 ******  Email field */
+			// Email field.
 			if ( ! empty( $field ) && ! empty( $label ) ) {
 				$wrap_classes = [
 					( ! empty( $subjectField ) ? 'col-xs-12 col-sm-6' : 'col-xs-12' ) . ' contact_email_wrap pirate_forms_three_inputs form_field_wrap',
 				];
+
 				// If this field was submitted with invalid data.
 				if ( isset( $_SESSION[ $error_key ]['contact-email'] ) ) {
 					$wrap_classes[] = 'error';
 				}
+
 				$elements[] = [
 					'front_end'    => true,
 					'placeholder'  => stripslashes( sanitize_text_field( $label ) ),
@@ -324,16 +346,17 @@ class PirateForms_Public {
 			$field = $pirate_forms_options['pirateformsopt_subject_field'];
 			$label = $pirate_forms_options['pirateformsopt_label_subject'];
 
-			/**
-			 ******  Subject field */
+			// Subject field.
 			if ( ! empty( $field ) && ! empty( $label ) ) {
 				$wrap_classes = [
 					'col-xs-12 contact_subject_wrap pirate_forms_three_inputs form_field_wrap',
 				];
+
 				// If this field was submitted with invalid data.
 				if ( isset( $_SESSION[ $error_key ]['contact-subject'] ) ) {
 					$wrap_classes[] = 'error';
 				}
+
 				$elements[] = [
 					'front_end'    => true,
 					'placeholder'  => stripslashes( sanitize_text_field( $label ) ),
@@ -349,12 +372,12 @@ class PirateForms_Public {
 			$field = $pirate_forms_options['pirateformsopt_message_field'];
 			$label = $pirate_forms_options['pirateformsopt_label_message'];
 
-			/**
-			 ******  Message field */
+			// Message field.
 			if ( ! empty( $field ) && ! empty( $label ) ) {
 				$wrap_classes = [
 					'col-xs-12 contact_message_wrap pirate_forms_three_inputs form_field_wrap',
 				];
+
 				// If this field was submitted with invalid data.
 				if ( isset( $_SESSION[ $error_key ]['contact-message'] ) ) {
 					$wrap_classes[] = 'error';
@@ -374,14 +397,15 @@ class PirateForms_Public {
 
 			$field = $pirate_forms_options['pirateformsopt_attachment_field'];
 
-			/**
-			 ******  Attachment field */
+			// Attachment field.
 			if ( ! empty( $field ) && 'no' !== $field ) {
 				$wrap_classes = [ 'col-xs-12 form_field_wrap contact_attachment_wrap' ];
+
 				// If this field was submitted with invalid data.
 				if ( isset( $_SESSION[ $error_key ]['contact-attachment'] ) ) {
 					$wrap_classes[] = 'error';
 				}
+
 				$elements[] = [
 					'front_end'    => true,
 					'required'     => $field === 'req',
@@ -397,15 +421,16 @@ class PirateForms_Public {
 				$field = $pirate_forms_options['pirateformsopt_checkbox_field'];
 				$label = $pirate_forms_options['pirateformsopt_label_checkbox'];
 
-				/**
-				 ******  checkbox field */
+				// Checkbox field.
 				if ( ! empty( $field ) && ! empty( $label ) ) {
 					$required     = $field === 'req';
 					$wrap_classes = [ 'col-xs-12 form_field_wrap contact_checkbox_wrap  ' ];
+
 					// If this field was submitted with invalid data.
 					if ( isset( $_SESSION[ $error_key ]['contact-checkbox'] ) ) {
 						$wrap_classes[] = 'error';
 					}
+
 					$elements[] = [
 						'front_end'    => true,
 						'required'     => $required,
@@ -424,8 +449,7 @@ class PirateForms_Public {
 				}
 			}
 
-			/**
-			 ******* ReCaptcha */
+			// ReCaptcha.
 			if ( ! empty( $pirate_forms_options['pirateformsopt_recaptcha_secretkey'] ) && ! empty( $pirate_forms_options['pirateformsopt_recaptcha_sitekey'] ) && ! empty( $pirate_forms_options['pirateformsopt_recaptcha_field'] ) && 'yes' === $pirate_forms_options['pirateformsopt_recaptcha_field'] ) {
 				$pirateformsopt_recaptcha_sitekey = $pirate_forms_options['pirateformsopt_recaptcha_sitekey'];
 				$elements[]                       = [
@@ -449,15 +473,16 @@ class PirateForms_Public {
 				];
 			}
 
-			/**
-			 ******  Submit button */
+			// Submit button.
 			$pirateformsopt_label_submit_btn = '';
 			if ( ! empty( $pirate_forms_options['pirateformsopt_label_submit_btn'] ) ) {
 				$pirateformsopt_label_submit_btn = $pirate_forms_options['pirateformsopt_label_submit_btn'];
 			}
+
 			if ( empty( $pirateformsopt_label_submit_btn ) ) {
 				$pirateformsopt_label_submit_btn = __( 'Submit', 'pirate-forms' );
 			}
+
 			$elements[] = [
 				'front_end' => true,
 				'type'      => 'button',
@@ -472,7 +497,7 @@ class PirateForms_Public {
 			];
 		}
 
-		/* Referring site or page, if any */
+		// Referring site or page, if any.
 		if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
 			$elements[] = [
 				'type'  => 'hidden',
@@ -481,7 +506,7 @@ class PirateForms_Public {
 			];
 		}
 
-		/* Referring page, if sent via URL query */
+		// Referring page, if sent via URL query.
 		if ( ! empty( $_REQUEST['src'] ) || ! empty( $_REQUEST['ref'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$src = isset( $_REQUEST['src'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['src'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 			$ref = isset( $_REQUEST['ref'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['ref'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
@@ -492,7 +517,8 @@ class PirateForms_Public {
 				'value' => ! empty( $src ) ? $src : $ref,
 			];
 		}
-		/* Are there any submission errors? */
+
+		// Are there any submission errors?
 		if ( ! empty( $_SESSION[ 'error' . $new_error_key ] ) ) {
 			$pirate_form->set_element( 'errors', sanitize_text_field( $_SESSION[ 'error' . $new_error_key ] ) );
 			unset( $_SESSION[ 'error' . $new_error_key ] );

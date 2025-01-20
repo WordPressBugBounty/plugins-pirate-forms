@@ -3,7 +3,7 @@ Contributors: wpforms, jaredatch, smub, slaFFik
 Tags:  contact form, forms, smtp, subscribe form, feedback form
 Requires at least: 5.5
 Tested up to: 6.7
-Stable tag: 2.6.0
+Stable tag: 2.6.1
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -144,7 +144,10 @@ Syed Balkhi
 
 == Changelog ==
 
-= 2.6.0 - 2025-01-08  =
+= 2.6.1 - 2025-01-20 =
+* Fixed throwing deprecation errors in PHP 8.2+.
+
+= 2.6.0 - 2024-12-19  =
 * The minimum required WordPress version is now 5.5.
 * The minimum required PHP version is now 5.6.
 * Security fixes

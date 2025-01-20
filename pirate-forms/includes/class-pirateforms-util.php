@@ -218,6 +218,7 @@ class PirateForms_Util {
 		if ( empty( $id ) ) {
 			$id = null;
 		}
+
 		$pirate_forms_options = self::get_option();
 
 		return apply_filters( 'pirateformpro_get_form_attributes', $pirate_forms_options, $id );

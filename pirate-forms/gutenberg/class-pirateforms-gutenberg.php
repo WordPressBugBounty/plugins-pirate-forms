@@ -98,10 +98,12 @@ class PirateForms_Gutenberg {
 		);
 
 		$language = get_locale();
+
 		if ( defined( 'POLYLANG_VERSION' ) && function_exists( 'pll_current_language' ) ) {
 			$language = pll_current_language();
 		}
-		wp_enqueue_script( 'recaptcha', "https://www.google.com/recaptcha/api.js?hl=$language" , [], $this->version, true );
+
+		wp_enqueue_script( 'recaptcha', "https://www.google.com/recaptcha/api.js?hl=$language", [], $this->version, true );
 
 		wp_enqueue_style( 'pirate-forms-front-css', PIRATEFORMS_URL . 'public/css/front.css', [], $this->version );
 		wp_enqueue_style( 'pirate-forms-block-css', PIRATEFORMS_URL . 'gutenberg/css/block.css', [], $this->version );
@@ -124,10 +126,12 @@ class PirateForms_Gutenberg {
 	 */
 	public function render_block( $atts = null ) {
 		$attributes = [];
+
 		if ( is_array( $atts ) && $atts ) {
 			if ( array_key_exists( 'form_id', $atts ) ) {
 				$attributes['id'] = $atts['form_id'];
 			}
+
 			if ( array_key_exists( 'ajax', $atts ) ) {
 				$attributes['ajax'] = $atts['ajax'];
 			}
@@ -135,14 +139,7 @@ class PirateForms_Gutenberg {
 			$attributes['id'] = $atts;
 		}
 
-		$params = '';
-		if ( $attributes ) {
-			foreach ( $attributes as $key => $value ) {
-				$params .= " $key=$value";
-			}
-		}
-
-		return do_shortcode( "[pirate_forms $params]" );
+		return pirate_forms()->pirate_forms_public->display_form( $attributes );
 	}
 
 	/**
@@ -164,6 +161,7 @@ class PirateForms_Gutenberg {
 	 */
 	public function get_form_html( WP_REST_Request $request ) {
 		$return = $this->validate_params( $request, [ 'id' ] );
+
 		if ( is_wp_error( $return ) ) {
 			return $return;
 		}
@@ -176,9 +174,11 @@ class PirateForms_Gutenberg {
 	 */
 	private function validate_params( WP_REST_Request $request, $params = [] ) {
 		$return = [];
+
 		foreach ( $params as $param ) {
 			$value = $request->get_param( $param );
-			if ( ! is_numeric( $value ) && empty( $value ) ) {
+
+			if ( ! is_numeric( $value ) ) {
 				return new WP_Error(
 					$param . '_invalid',
 					sprintf(

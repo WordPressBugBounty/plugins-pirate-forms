@@ -51,7 +51,6 @@ class PirateForms_PhpFormBuilder {
 	 * @param bool  $from_widget          Is the form in the widget.
 	 *
 	 * @return string
-	 * @throws Exception Exception.
 	 */
 	public function build_form( $elements, $pirate_forms_options, $from_widget ) {
 		$this->pirate_forms_options = $pirate_forms_options;
@@ -71,6 +70,7 @@ class PirateForms_PhpFormBuilder {
 		$html_helper   = new PirateForms_HTML();
 		$hidden        = '';
 		$custom_fields = '';
+
 		foreach ( $elements as $val ) {
 			if (
 				array_key_exists( 'class', $val ) &&
@@ -79,6 +79,7 @@ class PirateForms_PhpFormBuilder {
 			) {
 				$val['class'] = apply_filters( 'pirate_forms_field_class', $val['class'], $val['id'] );
 			}
+
 			if ( isset( $val['is_custom'] ) && $val['is_custom'] ) {
 				// we will combine the HTML for all the custom fields and save it under one element name.
 				$custom_fields .= $html_helper->add( $val, false );
@@ -92,10 +93,13 @@ class PirateForms_PhpFormBuilder {
 				) {
 					$hidden .= $element;
 				}
+
 				if ( $val['id'] === 'pirate-forms-maps-custom' ) {
 					$this->set_element( 'captcha', $element );
 				}
+
 				$this->set_element( $val['id'], $element );
+
 				if ( 'hidden' === $val['type'] ) {
 					if ( ! empty( $val['value'] ) ) {
 						$classes[] = $val['id'] . '-on';
@@ -109,18 +113,20 @@ class PirateForms_PhpFormBuilder {
 		$this->set_element( 'custom_fields', $custom_fields );
 
 		$form_attributes = array_filter( apply_filters( 'pirate_forms_form_attributes', [ 'action' => '' ] ) );
+
 		if ( $form_attributes ) {
-			// if additional classes are provided, add them to our classes.
+			// If additional classes are provided, add them to our classes.
 			if ( array_key_exists( 'class', $form_attributes ) ) {
 				$form_classes = explode( ' ', $form_attributes['class'] );
 				$classes      = array_merge( $classes, $form_classes );
 				unset( $form_attributes['class'] );
 			}
 
-			// don't allow overriding of method or enctype.
+			// Don't allow overriding of method or enctype.
 			if ( array_key_exists( 'method', $form_attributes ) ) {
 				unset( $form_attributes['method'] );
 			}
+
 			if ( array_key_exists( 'enctype', $form_attributes ) ) {
 				unset( $form_attributes['enctype'] );
 			}
@@ -145,7 +151,9 @@ class PirateForms_PhpFormBuilder {
 		$final .= $output;
 		$final .= apply_filters( "pirate_forms_after_{$name}", '', $this->pirate_forms_options );
 
-		$this->$name = $final;
+		// Suppress deprecation errors in PHP 8.2+.
+		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		@$this->$name = $final;
 	}
 
 	/**

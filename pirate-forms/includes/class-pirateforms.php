@@ -55,6 +55,14 @@ class PirateForms {
 	protected $version;
 
 	/**
+	 * The PirateForms_Public instance.
+	 *
+	 * @since 2.6.1
+	 * @var PirateForms_Public
+	 */
+	public $pirate_forms_public;
+
+	/**
 	 * Define the core functionality of the plugin.
 	 *
 	 * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -118,7 +126,7 @@ class PirateForms {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the PirateForms_I18n class in order to set the domain and to register the hook
+	 * Uses the PirateForms_I18n class to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
@@ -186,27 +194,26 @@ class PirateForms {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new PirateForms_Public( $this->get_plugin_name(), $this->get_version() );
+		$this->pirate_forms_public = new PirateForms_Public( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles_and_scripts' );
-		$this->loader->add_action( 'template_redirect', $plugin_public, 'template_redirect' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $this->pirate_forms_public, 'enqueue_styles_and_scripts' );
+		$this->loader->add_action( 'template_redirect', $this->pirate_forms_public, 'template_redirect' );
 
 		// ONLY FOR UNIT TESTING: we cannot fire template_redirect without errors, that is why we are creating a manual hook for this.
-		$this->loader->add_action( 'pirate_unittesting_template_redirect', $plugin_public, 'template_redirect' );
-		$this->loader->add_action( 'pirate_forms_send_email', $plugin_public, 'send_email' );
+		$this->loader->add_action( 'pirate_unittesting_template_redirect', $this->pirate_forms_public, 'template_redirect' );
+		$this->loader->add_action( 'pirate_forms_send_email', $this->pirate_forms_public, 'send_email' );
 
-		$this->loader->add_filter( 'widget_text', $plugin_public, 'widget_text_filter', 9 );
-		$this->loader->add_filter( 'pirate_forms_public_controls', $plugin_public, 'compatibility_class', 9 );
+		$this->loader->add_filter( 'widget_text', $this->pirate_forms_public, 'widget_text_filter', 9 );
+		$this->loader->add_filter( 'pirate_forms_public_controls', $this->pirate_forms_public, 'compatibility_class', 9 );
 
-		$this->loader->add_action( 'rest_api_init', $plugin_public, 'register_endpoint' );
+		$this->loader->add_action( 'rest_api_init', $this->pirate_forms_public, 'register_endpoint' );
 
 		/**
 		 * SDK tweaks.
 		 */
+		$this->loader->add_filter( 'pirate_forms_friendly_name', $this->pirate_forms_public, 'change_name' );
 
-		$this->loader->add_filter( 'pirate_forms_friendly_name', $plugin_public, 'change_name' );
-
-		add_shortcode( 'pirate_forms', [ $plugin_public, 'display_form' ] );
+		add_shortcode( 'pirate_forms', [ $this->pirate_forms_public, 'display_form' ] );
 	}
 
 	/**
